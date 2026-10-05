@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Dice Roller - Created Background Edition</title>
+  <style>
+    /* ==================== CREATED SVG PATTERNS ==================== */
+    :root {
+      /* Created Dark Dice Pattern Background (Embedded SVG) */
+      --bg-pattern: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e94560' fill-opacity='0.12'%3E%3Crect x='10' y='10' width='24' height='24' rx='5' stroke='%23e94560' stroke-opacity='0.25' stroke-width='2'/%3E%3Ccircle cx='22' cy='22' r='2.5'/%3E%3Crect x='46' y='46' width='24' height='24' rx='5' stroke='%23e94560' stroke-opacity='0.25' stroke-width='2'/%3E%3Ccircle cx='52' cy='52' r='2'/%3E%3Ccircle cx='64' cy='64' r='2'/%3E%3Crect x='46' y='10' width='24' height='24' rx='5' stroke='%23e94560' stroke-opacity='0.25' stroke-width='2'/%3E%3Ccircle cx='52' cy='16' r='2'/%3E%3Ccircle cx='58' cy='22' r='2'/%3E%3Ccircle cx='64' cy='28' r='2'/%3E%3Crect x='10' y='46' width='24' height='24' rx='5' stroke='%23e94560' stroke-opacity='0.25' stroke-width='2'/%3E%3Ccircle cx='16' cy='52' r='2'/%3E%3Ccircle cx='28' cy='52' r='2'/%3E%3Ccircle cx='16' cy='64' r='2'/%3E%3Ccircle cx='28' cy='64' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      
+      /* Created Subtle Dice Texture for Dice Faces */
+      --face-pattern: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%231a1a2e' fill-opacity='0.05'%3E%3Crect x='5' y='5' width='12' height='12' rx='2'/%3E%3Crect x='23' y='23' width='12' height='12' rx='2'/%3E%3C/g%3E%3C/svg%3E");
+
+      --bg-color: #1a1a2e;
+      --card-bg: rgba(22, 33, 62, 0.92);
+      --text-color: #ffffff;
+      --accent-color: #e94560;
+      --accent-hover: #ff6b81;
+      --dice-bg: #ffffff;
+      --dice-dot: #1a1a2e;
+      --shadow-color: rgba(0, 0, 0, 0.5);
+    }
+
+    [data-theme="neon"] {
+      --bg-pattern: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300f5d4' fill-opacity='0.15'%3E%3Crect x='10' y='10' width='24' height='24' rx='5' stroke='%2300f5d4' stroke-opacity='0.3' stroke-width='2'/%3E%3Ccircle cx='22' cy='22' r='2.5'/%3E%3Crect x='46' y='46' width='24' height='24' rx='5' stroke='%2300f5d4' stroke-opacity='0.3' stroke-width='2'/%3E%3Ccircle cx='52' cy='52' r='2'/%3E%3Ccircle cx='64' cy='64' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      --bg-color: #0d0221;
+      --card-bg: rgba(15, 8, 38, 0.92);
+      --text-color: #00f5d4;
+      --accent-color: #7b2cbf;
+      --accent-hover: #9d4edd;
+      --dice-bg: #150050;
+      --dice-dot: #00f5d4;
+      --shadow-color: rgba(0, 245, 212, 0.25);
+    }
+
+    [data-theme="gold"] {
+      --bg-pattern: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d97706' fill-opacity='0.15'%3E%3Crect x='10' y='10' width='24' height='24' rx='5' stroke='%23d97706' stroke-opacity='0.3' stroke-width='2'/%3E%3Ccircle cx='22' cy='22' r='2.5'/%3E%3Crect x='46' y='46' width='24' height='24' rx='5' stroke='%23d97706' stroke-opacity='0.3' stroke-width='2'/%3E%3Ccircle cx='52' cy='52' r='2'/%3E%3Ccircle cx='64' cy='64' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      --bg-color: #1c1917;
+      --card-bg: rgba(41, 37, 36, 0.92);
+      --text-color: #fef08a;
+      --accent-color: #d97706;
+      --accent-hover: #f59e0b;
+      --dice-bg: #fef3c7;
+      --dice-dot: #78350f;
+      --shadow-color: rgba(217, 119, 6, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Page Background with Generated Dice Pattern */
+    body {
+      background-color: var(--bg-color);
+      background-image: var(--bg-pattern);
+      background-repeat: repeat;
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .app-card {
+      background-color: var(--card-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      width: 100%;
+      max-width: 650px;
+      padding: 30px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 15px 35px var(--shadow-color);
+      text-align: center;
+      transition: background-color 0.4s ease;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    /* ==================== CONTROLS ==================== */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    select {
+      background: var(--bg-color);
+      color: var(--text-color);
+      border: 1px solid var(--accent-color);
+      padding: 8px 12px;
+      border-radius: 8px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* ==================== DICE BOARD ==================== */
+    .dice-board {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      min-height: 180px;
+      margin: 30px 0;
+      perspective: 1000px;
+    }
+
+    /* 3D Dice Object */
+    .dice {
+      width: 80px;
+      height: 80px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+      cursor: pointer;
+    }
+
+    /* Dice Face with Created Pattern Overlay */
+    .face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: var(--dice-bg);
+      background-image: var(--face-pattern);
+      background-repeat: repeat;
+      border: 2px solid rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      display: grid;
+      grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+      padding: 8px;
+      box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      background-color: var(--dice-dot);
+      border-radius: 50%;
+      justify-self: center;
+      align-self: center;
+      display: none;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 3D Face Positions */
+    .face-1 { transform: translateZ(40px); }
+    .face-2 { transform: rotateY(180deg) translateZ(40px); }
+    .face-3 { transform: rotateY(90deg) translateZ(40px); }
+    .face-4 { transform: rotateY(-90deg) translateZ(40px); }
+    .face-5 { transform: rotateX(90deg) translateZ(40px); }
+    .face-6 { transform: rotateX(-90deg) translateZ(40px); }
+
+    /* Dot Placements per Face */
+    /* 1 */ .face-1 .dot:nth-child(5) { display: block; }
+    /* 2 */ .face-2 .dot:nth-child(1), .face-2 .dot:nth-child(9) { display: block; }
+    /* 3 */ .face-3 .dot:nth-child(1), .face-3 .dot:nth-child(5), .face-3 .dot:nth-child(9) { display: block; }
+    /* 4 */ .face-4 .dot:nth-child(1), .face-4 .dot:nth-child(3), .face-4 .dot:nth-child(7), .face-4 .dot:nth-child(9) { display: block; }
+    /* 5 */ .face-5 .dot:nth-child(1), .face-5 .dot:nth-child(3), .face-5 .dot:nth-child(5), .face-5 .dot:nth-child(7), .face-5 .dot:nth-child(9) { display: block; }
+    /* 6 */ .face-6 .dot:nth-child(1), .face-6 .dot:nth-child(3), .face-6 .dot:nth-child(4), .face-6 .dot:nth-child(6), .face-6 .dot:nth-child(7), .face-6 .dot:nth-child(9) { display: block; }
+
+    /* ==================== BUTTONS & RESULTS ==================== */
+    .roll-btn {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 14px 36px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px var(--shadow-color);
+      transition: background-color 0.3s, transform 0.1s;
+    }
+
+    .roll-btn:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .roll-btn:active {
+      transform: scale(0.96);
+    }
+
+    .roll-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .result-display {
+      margin-top: 25px;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    /* ==================== HISTORY LOG ==================== */
+    .history-section {
+      margin-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 20px;
+      text-align: left;
+    }
+
+    .history-section h3 {
+      font-size: 1rem;
+      margin-bottom: 12px;
+      opacity: 0.8;
+    }
+
+    .history-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      background: rgba(0, 0, 0, 0.25);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-card">
+    <h1>3D Dice Roller</h1>
+
+    <!-- Configuration Options -->
+    <div class="controls">
+      <div class="control-group">
+        <label for="dice-count">Dice Count:</label>
+        <select id="dice-count">
+          <option value="1">1 Die</option>
+          <option value="2">2 Dice</option>
+          <option value="3">3 Dice</option>
+          <option value="4">4 Dice</option>
+          <option value="5">5 Dice</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="theme-select">Theme:</label>
+        <select id="theme-select">
+          <option value="default">Classic Pattern</option>
+          <option value="neon">Cyber Neon</option>
+          <option value="gold">Luxury Gold</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Interactive Dice Board -->
+    <div class="dice-board" id="dice-board"></div>
+
+    <!-- Trigger Button -->
+    <button class="roll-btn" id="roll-btn">Roll Dice</button>
+
+    <!-- Score Display -->
+    <div class="result-display">
+      Total Sum: <span id="total-sum">0</span>
+    </div>
+
+    <!-- History Panel -->
+    <div class="history-section">
+      <h3>Roll History</h3>
+      <ul class="history-list" id="history-list"></ul>
+    </div>
+  </div>
+
+  <script>
+    // Rotations (x, y) needed to land on each face
+    const FACE_ROTATIONS = {
+      1: { x: 0, y: 0 },
+      2: { x: 0, y: -180 },
+      3: { x: 0, y: -90 },
+      4: { x: 0, y: 90 },
+      5: { x: -90, y: 0 },
+      6: { x: 90, y: 0 }
+    };
+
+    const diceBoard = document.getElementById('dice-board');
+    const rollBtn = document.getElementById('roll-btn');
+    const diceCountSelect = document.getElementById('dice-count');
+    const themeSelect = document.getElementById('theme-select');
+    const totalSumEl = document.getElementById('total-sum');
+    const historyList = document.getElementById('history-list');
+
+    let rollCounters = [];
+
+    // Synthesize rolling audio effect dynamically using Web Audio API
+    function playRollSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        for (let i = 0; i < 6; i++) {
+          setTimeout(() => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(120 + Math.random() * 80, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.05);
+          }, i * 120);
+        }
+      } catch (e) {
+        // Audio API fallback
+      }
+    }
+
+    // Generate face markup
+    function createFace(faceNum) {
+      const face = document.createElement('div');
+      face.className = `face face-${faceNum}`;
+      for (let i = 0; i < 9; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        face.appendChild(dot);
+      }
+      return face;
+    }
+
+    // Build dice DOM elements based on count
+    function buildDice(count) {
+      diceBoard.innerHTML = '';
+      rollCounters = new Array(count).fill(0);
+
+      for (let i = 0; i < count; i++) {
+        const dice = document.createElement('div');
+        dice.className = 'dice';
+        dice.dataset.index = i;
+
+        for (let f = 1; f <= 6; f++) {
+          dice.appendChild(createFace(f));
+        }
+
+        dice.addEventListener('click', () => rollSingleDice(i));
+        diceBoard.appendChild(dice);
+      }
+    }
+
+    // Roll all active dice
+    function rollAllDice() {
+      rollBtn.disabled = true;
+      playRollSound();
+
+      const count = parseInt(diceCountSelect.value, 10);
+      const results = [];
+      const diceElements = document.querySelectorAll('.dice');
+
+      diceElements.forEach((dice, idx) => {
+        const val = Math.floor(Math.random() * 6) + 1;
+        results.push(val);
+        applyRollAnimation(dice, idx, val);
+      });
+
+      setTimeout(() => {
+        const sum = results.reduce((acc, curr) => acc + curr, 0);
+        totalSumEl.textContent = sum;
+        addHistoryRecord(results, sum);
+        rollBtn.disabled = false;
+      }, 1000);
+    }
+
+    // Roll individual clicked die
+    function rollSingleDice(index) {
+      if (rollBtn.disabled) return;
+      rollBtn.disabled = true;
+      playRollSound();
+
+      const diceElements = document.querySelectorAll('.dice');
+      const targetDice = diceElements[index];
+      const result = Math.floor(Math.random() * 6) + 1;
+
+      applyRollAnimation(targetDice, index, result);
+
+      setTimeout(() => {
+        totalSumEl.textContent = '-';
+        rollBtn.disabled = false;
+      }, 1000);
+    }
+
+    // Calculate 3D spin and apply to element
+    function applyRollAnimation(diceElement, index, targetValue) {
+      rollCounters[index]++;
+      const extraSpins = rollCounters[index] * 360 * 3;
+      const baseRotation = FACE_ROTATIONS[targetValue];
+
+      const rotX = baseRotation.x + extraSpins;
+      const rotY = baseRotation.y + extraSpins;
+
+      diceElement.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    }
+
+    // Log roll values into UI history section
+    function addHistoryRecord(values, sum) {
+      const item = document.createElement('li');
+      item.className = 'history-item';
+      
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      item.innerHTML = `<span><strong>Rolled:</strong> [ ${values.join(', ')} ]</span><span><strong>Sum:</strong> ${sum} (${time})</span>`;
+      
+      historyList.prepend(item);
+    }
+
+    // Handlers
+    diceCountSelect.addEventListener('change', (e) => {
+      buildDice(parseInt(e.target.value, 10));
+      totalSumEl.textContent = '0';
+    });
+
+    themeSelect.addEventListener('change', (e) => {
+      const selectedTheme = e.target.value;
+      if (selectedTheme === 'default') {
+        document.body.removeAttribute('data-theme');
+      } else {
+        document.body.setAttribute('data-theme', selectedTheme);
+      }
+    });
+
+    rollBtn.addEventListener('click', rollAllDice);
+
+    // Initial setup
+    buildDice(1);
+  </script>
+</body>
+</html>
